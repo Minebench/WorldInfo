@@ -180,16 +180,8 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	public void onPluginMessageReceived(String channel, Player player,
 	                                    byte[] bytes) {
-		log.info("Message received");
-
-		if (!channel.equals(this.channel)) {
-			player.sendMessage("Message Recieved but was not the same channel.");
-			return;
-		}
+		if (!channel.equals(this.channel)) return;
 		try {
-			player.sendMessage("Message recieved and sending data...");
-
-
 			World w = player.getWorld();
 
 
