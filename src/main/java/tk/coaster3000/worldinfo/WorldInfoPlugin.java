@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener, Listener {
 
 	public static final byte[] ZERO_BYTES = new byte[0];
+	private static WorldInfoPlugin instance;
 
 	private String encoding;
 	private String channel;
@@ -41,8 +42,16 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	private boolean registered = false;
 
+	public static WorldInfoPlugin getInstance() {
+		return instance;
+	}
+
+	private static void setInstance(WorldInfoPlugin plugin) {
+		instance = plugin;
+	}
 	public void onEnable() {
 		log = getLogger();
+		setInstance(this);
 		try {
 			metrics = new Metrics(this);
 			metrics.start();
@@ -53,6 +62,8 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	public void onDisable() {
 		unregister();
+
+		setInstance(null);
 	}
 
 	public void reloadConfigSettings() {
@@ -151,7 +162,6 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 				(data);
 		player.sendPluginMessage(this, channel, buffer.array());
 	}
-
 
 
 	private String getFileID(World w) {
