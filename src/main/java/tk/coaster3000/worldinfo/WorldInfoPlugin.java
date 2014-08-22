@@ -6,8 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,22 +21,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import static tk.coaster3000.worldinfo.Settings.*;
 
 public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener, Listener {
 
 	public static final byte[] ZERO_BYTES = new byte[0];
 	private static WorldInfoPlugin instance;
-
-	private String encoding;
-	private String channel;
-	private boolean informPlayer;
-	private ID_MODE idMode;
-	private Logger log;
-
 	private Metrics metrics;
+
+	private Settings settings;
+
+	private Logger log;
 
 	private boolean registered = false;
 
@@ -49,15 +45,27 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 	private static void setInstance(WorldInfoPlugin plugin) {
 		instance = plugin;
 	}
+
+	public Settings getSettings() {
+		return settings;
+	}
+
 	public void onEnable() {
-		log = getLogger();
 		setInstance(this);
+
+		settings = new Settings(this);
 		try {
 			metrics = new Metrics(this);
 			metrics.start();
-		} catch (IOException ignored) { }
+		} catch (IOException ignored) {
+		}
 		reloadConfigSettings();
 		getCommand("reloadWorldInfo").setExecutor(this);
+	}
+
+	void setupLogger() {
+		log = getLogger();
+
 	}
 
 	public void onDisable() {
@@ -68,40 +76,15 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	public void reloadConfigSettings() {
 		unregister();
-		FileConfiguration config = getConfig();
-
-		File configFile = new File(getDataFolder(), "config.yml");
-
-		if (!configFile.exists())
-			try {
-				config.save(configFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		else {
-			try {
-				config.load(configFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InvalidConfigurationException e) {
-				e.printStackTrace();
-			}
-		}
-		config.options().copyDefaults(true);
-
-		informPlayer = config.getBoolean("inform-player", false);
-		channel = config.getString("plugin-channel", "world_info");
-		encoding = config.getString("encoding", "UTF-8");
-		idMode = ID_MODE.valueOf(config.getString("mode", ID_MODE.NAME.name()).toUpperCase(Locale.ENGLISH));
-
+		settings.load();
 		register();
 	}
 
 	public void register() {
 		registered = true;
 		Bukkit.getPluginManager().registerEvents(this, this);
-		getServer().getMessenger().registerOutgoingPluginChannel(this, channel);
-		getServer().getMessenger().registerIncomingPluginChannel(this, channel, this);
+		getServer().getMessenger().registerOutgoingPluginChannel(this, channel());
+		getServer().getMessenger().registerIncomingPluginChannel(this, channel(), this);
 	}
 
 	@Override
@@ -150,8 +133,8 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	public void unregister() {
 		if (registered) {
-			getServer().getMessenger().unregisterIncomingPluginChannel(this, channel, this);
-			getServer().getMessenger().unregisterOutgoingPluginChannel(this, channel);
+			getServer().getMessenger().unregisterIncomingPluginChannel(this, channel(), this);
+			getServer().getMessenger().unregisterOutgoingPluginChannel(this, channel());
 			HandlerList.unregisterAll((Listener) this);
 		}
 		registered = false;
@@ -160,7 +143,7 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 	private void sendData(Player player, byte packetID, byte[] data) {
 		ByteBuffer buffer = ByteBuffer.allocate(2 + data.length).put(packetID).put((byte) data.length).put
 				(data);
-		player.sendPluginMessage(this, channel, buffer.array());
+		player.sendPluginMessage(this, channel(), buffer.array());
 	}
 
 
@@ -190,28 +173,28 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	public void onPluginMessageReceived(String channel, Player player,
 	                                    byte[] bytes) {
-		if (!channel.equals(this.channel)) return;
+		if (!channel.equals(channel())) return;
 		try {
 			World w = player.getWorld();
 
 
 			byte[] data = ZERO_BYTES;
-			switch (idMode) {
+			switch (id_mode()) {
 				case NAME:
-					data = w.getName().getBytes(encoding);
+					data = w.getName().getBytes(encoding());
 					break;
 				case UUID:
-					data = w.getUID().toString().getBytes(encoding);
+					data = w.getUID().toString().getBytes(encoding());
 					break;
 				case FILE:
-					data = getFileID(w).getBytes(encoding);
+					data = getFileID(w).getBytes(encoding());
 					break;
 			}
 
 			sendData(player, (byte) 0, data);
 		} catch (Throwable t) {
 			t.printStackTrace();
-			if (informPlayer && player.isOnline()) player.sendMessage(new String[]{
+			if (inform_player() && player.isOnline()) player.sendMessage(new String[]{
 					ChatColor.RED + "An error occurred sending world UUID!",
 					ChatColor.GRAY + "Please check server logs for details..."
 			});
