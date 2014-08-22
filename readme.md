@@ -1,7 +1,13 @@
 Simple plugin channel listener plugin to listen to a configured channel and respond on same channel with the players current world UUID.
 
-This is primarily a test plugin for the packets for mods to use.
-It is not going to be the exact method for such data fetching.
+## NOTICE
+**Any branch with the starting name WIP is subject to frequent rebasing. Do not fork from these branches unless you 
+know 
+what you are doing!**
+
+## How To Use
+
+Please see the wiki for information on how to hook into the system.
 
 ## LICENSE
 The MIT License (MIT)
