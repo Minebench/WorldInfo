@@ -4,6 +4,7 @@ author: Chris (Coaster3000 | Coaster4321)
 website: www.github.com/coaster3000/WUUID
 version: ${project.version}
 main: tk.coaster3000.worldinfo.WorldInfoPlugin
+metrics: true
 commands:
     reloadWorldInfo:
         description: Execute the current debug code.

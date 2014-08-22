@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.FileReader;
@@ -36,10 +37,16 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 	private ID_MODE idMode;
 	private Logger log;
 
+	private Metrics metrics;
+
 	private boolean registered = false;
 
 	public void onEnable() {
 		log = getLogger();
+		try {
+			metrics = new Metrics(this);
+			metrics.start();
+		} catch (IOException ignored) { }
 		reloadConfigSettings();
 		getCommand("reloadWorldInfo").setExecutor(this);
 	}
