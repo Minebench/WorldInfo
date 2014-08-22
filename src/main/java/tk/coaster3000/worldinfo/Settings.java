@@ -1,6 +1,7 @@
 package tk.coaster3000.worldinfo;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import tk.coaster3000.worldinfo.bukkit.WorldInfoPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,8 +94,6 @@ public class Settings {
 
 	public Settings load() {
 		config = plugin.getConfig(); //Reload config automatically.
-
-		plugin.setupLogger();
 
 		inform_player(config.getBoolean("inform-player", false));
 		channel(config.getString("plugin-channel", "world_info"));

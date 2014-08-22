@@ -1,4 +1,4 @@
-package tk.coaster3000.worldinfo;
+package tk.coaster3000.worldinfo.bukkit;
 
 import com.google.common.io.LineReader;
 import org.bukkit.Bukkit;
@@ -15,6 +15,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.mcstats.Metrics;
+import tk.coaster3000.worldinfo.Settings;
 
 import java.io.File;
 import java.io.FileReader;
