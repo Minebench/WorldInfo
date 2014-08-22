@@ -1,4 +1,4 @@
-package com.github.coaster3000.WUUID.worlduuid;
+package tk.coaster3000.worldinfo;
 
 import org.junit.Test;
 
