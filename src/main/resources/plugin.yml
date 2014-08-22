@@ -1,7 +1,7 @@
 name: WorldInfo
-description: Provides plugin channel response of the current world UUID provided by bukkit.
+description: Provides plugin channel messages to mods for world information.
 author: Chris (Coaster3000 | Coaster4321)
-website: www.github.com/coaster3000/WUUID
+website: www.github.com/coaster3000/WorldInfo
 version: ${project.version}
 main: tk.coaster3000.worldinfo.WorldInfoPlugin
 metrics: true
