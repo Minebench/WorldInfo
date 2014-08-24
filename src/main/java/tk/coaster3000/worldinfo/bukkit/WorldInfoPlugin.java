@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.mcstats.Metrics;
 import tk.coaster3000.worldinfo.Settings;
+import tk.coaster3000.worldinfo.WorldInfo;
 
 import java.io.File;
 import java.io.FileReader;
@@ -33,28 +34,27 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 	private static WorldInfoPlugin instance;
 	private Metrics metrics;
 
-	private Settings settings;
-
 	private Logger log;
 
 	private boolean registered = false;
+	private WorldInfo worldInfo;
 
 	public static WorldInfoPlugin getInstance() {
 		return instance;
 	}
 
-	private static void setInstance(WorldInfoPlugin plugin) {
-		instance = plugin;
-	}
-
+	/**
+	 * @deprecated Being removed in next official version. See {@link tk.coaster3000.worldinfo.WorldInfo#getSettings()}
+	 * @return Settings object.
+	 */
+	@Deprecated
 	public Settings getSettings() {
-		return settings;
+		return getWorldInfo().getSettings();
 	}
 
 	public void onEnable() {
-		setInstance(this);
+		this.worldInfo = WorldInfo.newInstance(BukkitFileConfigProvider.wrap(this));
 
-		settings = new Settings(this);
 		try {
 			metrics = new Metrics(this);
 			metrics.start();
@@ -66,18 +66,16 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	void setupLogger() {
 		log = getLogger();
-
 	}
 
 	public void onDisable() {
 		unregister();
-
-		setInstance(null);
+		WorldInfo.clearInstance();
 	}
 
 	public void reloadConfigSettings() {
 		unregister();
-		settings.load();
+		getSettings().load();
 		register();
 	}
 
@@ -200,6 +198,10 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 					ChatColor.GRAY + "Please check server logs for details..."
 			});
 		}
+	}
+
+	public WorldInfo getWorldInfo() {
+		return worldInfo;
 	}
 
 	enum ID_MODE {

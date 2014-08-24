@@ -1,14 +1,8 @@
 package tk.coaster3000.worldinfo;
 
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import tk.coaster3000.worldinfo.bukkit.WorldInfoPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Settings {
 
@@ -21,17 +15,13 @@ public class Settings {
 	private String encoding = "UTF-8";
 	private ID_MODE id_mode = ID_MODE.NAME;
 
-	private FileConfiguration config;
-	private File configFile;
-	private final Logger log;
-	private final WorldInfoPlugin plugin;
+	private ConfigProvider config;
+	private final WorldInfo instance;
 	private boolean inform_player;
 
-	public Settings(WorldInfoPlugin plugin) {
-		this.plugin = plugin;
-		this.log = plugin.getLogger();
-		this.configFile = new File(plugin.getDataFolder(), "config.yml");
-		this.config = plugin.getConfig();
+	public Settings(WorldInfo instance, ConfigProvider config) {
+		this.instance = instance;
+		this.config = config;
 	}
 
 	public static Settings getInstance() {
@@ -74,28 +64,17 @@ public class Settings {
 	}
 
 	public Settings save() {
-
 		config.set(INFORM_PLAYER_NODE, inform_player());
 		config.set(CHANNEL_NODE, channel());
 		config.set(ENCODING_NODE, encoding());
 		config.set(ID_MODE_NODE, id_mode());
 
-		try {
-			config.save(configFile);
-		} catch (IOException e) {
-			log.log(Level.WARNING, "Failed to save file...", e);
-		}
+		config.save();
 		return this;
 	}
 
 	public Settings load() {
-		try {
-			config.load(configFile); //Reload config automatically.
-		} catch (IOException e) {
-			log.log(Level.WARNING, "IO Exception Occured... Could not load config..", e);
-		} catch (InvalidConfigurationException e) {
-			log.log(Level.SEVERE, "Invalid configuration file supplied. Did you put tabs in it?!", e);
-		}
+		config.load();
 
 		inform_player(config.getBoolean("inform-player", false));
 		encoding(config.getString("encoding", "UTF-8"));
