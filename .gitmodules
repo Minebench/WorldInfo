@@ -1,0 +1,6 @@
+[submodule "WorldInfo-Forge"]
+	path = WorldInfo-Forge
+	url = git@github.com:coaster3000/WorldInfo-Forge.git
+[submodule "WorldInfo-Common"]
+	path = WorldInfo-Common
+	url = git@github.com:coaster3000/WorldInfo-Common.git

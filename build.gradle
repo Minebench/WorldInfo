@@ -1,0 +1,11 @@
+// Gradle repositories and dependencies
+allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'sonatype-nexus-public'
+            url = 'https://oss.sonatype.org/content/repositories/public/'
+        }
+        jcenter()
+    }
+}
