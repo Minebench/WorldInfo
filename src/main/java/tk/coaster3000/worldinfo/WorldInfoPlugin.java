@@ -72,7 +72,7 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 		config.options().copyDefaults(true);
 
 		informPlayer = config.getBoolean("inform-player", false);
-		channel = config.getString("plugin-channel", "world_id");
+		channel = "worldinfo:" + config.getString("plugin-channel", "world_id");
 		encoding = config.getString("encoding", "UTF-8");
 		idMode = ID_MODE.valueOf(config.getString("mode", ID_MODE.NAME.name()).toUpperCase(Locale.ENGLISH));
 
