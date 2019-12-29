@@ -35,6 +35,7 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 	private boolean informPlayer;
 	private ID_MODE idMode;
 	private Logger log;
+	private int verbose;
 
 	private boolean registered = false;
 
@@ -75,6 +76,7 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 		channel = "worldinfo:" + config.getString("plugin-channel", "world_id");
 		encoding = config.getString("encoding", "UTF-8");
 		idMode = ID_MODE.valueOf(config.getString("mode", ID_MODE.NAME.name()).toUpperCase(Locale.ENGLISH));
+		verbose = config.getInt("verbose", 0);
 
 		register();
 	}
@@ -180,7 +182,9 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 			return;
 		}
 		try {
-			player.sendMessage("Message recieved and sending data...");
+			if(verbose >= 3){
+				player.sendMessage("Message recieved and sending data...");
+			}
 
 
 			World w = player.getWorld();

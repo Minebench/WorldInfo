@@ -1,3 +1,4 @@
 plugin-channel: world_uid
 inform-player: false
 encoding: UTF-8
+verbose: 0
