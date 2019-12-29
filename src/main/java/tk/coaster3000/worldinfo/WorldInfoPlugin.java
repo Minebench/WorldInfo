@@ -39,12 +39,14 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 	private boolean registered = false;
 
+	@Override
 	public void onEnable() {
 		log = getLogger();
 		reloadConfigSettings();
 		getCommand("reloadWorldInfo").setExecutor(this);
 	}
 
+	@Override
 	public void onDisable() {
 		unregister();
 	}
@@ -55,13 +57,13 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 
 		File configFile = new File(getDataFolder(), "config.yml");
 
-		if (!configFile.exists())
+		if (!configFile.exists()) {
 			try {
 				config.save(configFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		else {
+		} else {
 			try {
 				config.load(configFile);
 			} catch (IOException e) {
@@ -173,6 +175,7 @@ public class WorldInfoPlugin extends JavaPlugin implements PluginMessageListener
 		return ret;
 	}
 
+	@Override
 	public void onPluginMessageReceived(String channel, Player player,
 	                                    byte[] bytes) {
 		log.info("Message received");
