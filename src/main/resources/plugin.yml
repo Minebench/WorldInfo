@@ -3,6 +3,7 @@ description: Provides plugin channel response of the current world UUID provided
 author: Chris (Coaster3000 | Coaster4321)
 website: www.github.com/coaster3000/WUUID
 version: ${project.version}
+api-version: '1.13'
 main: tk.coaster3000.worldinfo.WorldInfoPlugin
 commands:
     reloadWorldInfo:
